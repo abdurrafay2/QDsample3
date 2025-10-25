@@ -33,7 +33,7 @@ export default function BookingWidget() {
   ] as const
 
   return (
-    <div className="bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 p-8 max-w-5xl mx-auto animate-slide-up hover:shadow-3xl transition-all duration-500 relative overflow-hidden">
+    <div className="bg-white/95 backdrop-blur-sm rounded-2xl sm:rounded-3xl shadow-2xl border border-white/20 p-4 sm:p-6 lg:p-8 max-w-5xl mx-auto animate-slide-up hover:shadow-3xl transition-all duration-500 relative overflow-hidden">
       {/* Background Image for Active Tab */}
       {activeTab === 'hotels' && (
         <div className="absolute inset-0 opacity-15">
@@ -69,21 +69,21 @@ export default function BookingWidget() {
         </div>
       )}
       {/* Tab Navigation */}
-      <div className="relative z-10 flex border-b border-gray-200 mb-8 bg-white/50 backdrop-blur-sm rounded-t-2xl p-2">
+      <div className="relative z-10 flex flex-col sm:flex-row border-b border-gray-200 mb-6 sm:mb-8 bg-white/50 backdrop-blur-sm rounded-t-xl sm:rounded-t-2xl p-1 sm:p-2">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`flex items-center space-x-2 px-6 py-4 text-sm font-semibold transition-all duration-500 transform hover:scale-105 rounded-xl ${
+            className={`flex items-center justify-center sm:justify-start space-x-2 px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm font-semibold transition-all duration-500 transform hover:scale-105 rounded-lg sm:rounded-xl mb-1 sm:mb-0 ${
               activeTab === tab.id
                 ? `text-white bg-gradient-to-r ${tab.gradient} shadow-lg border-2 border-white/30`
                 : 'text-gray-600 hover:text-gray-800 hover:bg-white/70'
             }`}
           >
-            <span className="text-lg">{tab.icon}</span>
-            <span>{tab.label}</span>
+            <span className="text-sm sm:text-lg">{tab.icon}</span>
+            <span className="hidden sm:block">{tab.label}</span>
             {activeTab === tab.id && (
-              <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-white"></div>
+              <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-2 sm:border-l-4 border-r-2 sm:border-r-4 border-t-2 sm:border-t-4 border-transparent border-t-white"></div>
             )}
           </button>
         ))}
@@ -92,7 +92,7 @@ export default function BookingWidget() {
       {/* Tab Content */}
       <div className="relative z-10 space-y-6">
         {activeTab === 'hotels' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 animate-slide-in-left">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 animate-slide-in-left">
             <div className="space-y-2">
               <label className="block text-sm font-semibold text-gray-800 mb-3">
                 🏨 Destination
@@ -136,7 +136,7 @@ export default function BookingWidget() {
         )}
 
         {activeTab === 'airlines' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 animate-slide-in-right">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6 animate-slide-in-right">
             <div className="space-y-2">
               <label className="block text-sm font-semibold text-gray-800 mb-3">
                 ✈️ From
@@ -190,7 +190,7 @@ export default function BookingWidget() {
         )}
 
         {activeTab === 'transport' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-slide-up">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 animate-slide-up">
             <div className="space-y-2">
               <label className="block text-sm font-semibold text-gray-800 mb-3">
                 🚗 Pick-up Location
@@ -225,22 +225,22 @@ export default function BookingWidget() {
       </div>
 
       {/* Search Button */}
-      <div className="relative z-10 mt-8 text-center">
-        <button className={`font-bold py-5 px-16 rounded-2xl text-xl transition-all duration-500 shadow-2xl hover:shadow-3xl transform hover:scale-110 animate-pulse-slow ${
+      <div className="relative z-10 mt-6 sm:mt-8 text-center">
+        <button className={`font-bold py-4 sm:py-5 px-8 sm:px-16 rounded-xl sm:rounded-2xl text-lg sm:text-xl transition-all duration-500 shadow-2xl hover:shadow-3xl transform hover:scale-110 animate-pulse-slow ${
           activeTab === 'hotels' 
             ? 'bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white' 
             : activeTab === 'airlines'
             ? 'bg-gradient-to-r from-sky-500 to-blue-500 hover:from-sky-600 hover:to-blue-600 text-white'
             : 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white'
         }`}>
-          <span className="flex items-center space-x-3">
-            <span>
+          <span className="flex items-center justify-center space-x-2 sm:space-x-3">
+            <span className="text-sm sm:text-base">
               {activeTab === 'hotels' ? '🏨' : activeTab === 'airlines' ? '✈️' : '🚗'}
             </span>
-            <span>
+            <span className="text-sm sm:text-base">
               {activeTab === 'hotels' ? 'Find Hotels' : activeTab === 'airlines' ? 'Search Flights' : 'Book Transport'}
             </span>
-            <span className="animate-bounce">→</span>
+            <span className="animate-bounce text-sm sm:text-base">→</span>
           </span>
         </button>
       </div>
