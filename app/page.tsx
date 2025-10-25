@@ -1,454 +1,522 @@
-import BookingWidget from '@/components/BookingWidget'
+'use client'
+
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 
 export default function Home() {
+  const [activeTab, setActiveTab] = useState('hotels')
+  const [currentImage, setCurrentImage] = useState(0)
+  const [favorites, setFavorites] = useState<number[]>([])
+  const [hoveredCard, setHoveredCard] = useState<number | null>(null)
+
+  const backgroundImages = ['/mecca.jpg', '/jeddah.jpg', '/Medina.jpg']
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImage((prev) => (prev + 1) % backgroundImages.length)
+    }, 5000)
+    return () => clearInterval(interval)
+  }, [])
+
+  const toggleFavorite = (id: number) => {
+    setFavorites(prev => 
+      prev.includes(id) 
+        ? prev.filter(fav => fav !== id)
+        : [...prev, id]
+    )
+  }
+
+  const hotels = [
+    {
+      id: 1,
+      name: "Luxury Hotel Mecca",
+      location: "Mecca, Saudi Arabia",
+      price: 299,
+      rating: 4.8,
+      image: "/hotel.jpg",
+      type: "Luxury",
+      distance: "0.5 km from Grand Mosque",
+      amenities: ["Free WiFi", "Restaurant", "Swimming Pool", "Fitness Center"]
+    },
+    {
+      id: 2,
+      name: "Red Sea Resort",
+      location: "Jeddah, Saudi Arabia",
+      price: 199,
+      rating: 4.6,
+      image: "/jeddah.jpg",
+      type: "Resort",
+      distance: "2.1 km from Red Sea",
+      amenities: ["Free WiFi", "Restaurant", "Spa", "Fitness Center"]
+    },
+    {
+      id: 3,
+      name: "Medina Palace Hotel",
+      location: "Medina, Saudi Arabia",
+      price: 249,
+      rating: 4.7,
+      image: "/Medina.jpg",
+      type: "Palace",
+      distance: "0.8 km from Prophet's Mosque",
+      amenities: ["Free WiFi", "Restaurant", "Swimming Pool", "Fitness Center"]
+    },
+    {
+      id: 4,
+      name: "Mecca Grand Hotel",
+      location: "Mecca, Saudi Arabia",
+      price: 189,
+      rating: 4.5,
+      image: "/mecca.jpg",
+      type: "Business",
+      distance: "1.2 km from Grand Mosque",
+      amenities: ["Free WiFi", "Restaurant", "Fitness Center", "24/7 Service"]
+    },
+    {
+      id: 5,
+      name: "Jeddah City Center",
+      location: "Jeddah, Saudi Arabia",
+      price: 159,
+      rating: 4.4,
+      image: "/jeddah.jpg",
+      type: "City",
+      distance: "3.5 km from city center",
+      amenities: ["Free WiFi", "Restaurant", "Swimming Pool", "Business Center"]
+    },
+    {
+      id: 6,
+      name: "Medina Heritage Hotel",
+      location: "Medina, Saudi Arabia",
+      price: 179,
+      rating: 4.3,
+      image: "/Medina.jpg",
+      type: "Heritage",
+      distance: "1.5 km from Prophet's Mosque",
+      amenities: ["Free WiFi", "Restaurant", "Fitness Center", "Cultural Tours"]
+    }
+  ]
+
+  const flights = [
+    {
+      id: 1,
+      airline: "Saudi Airlines",
+      from: "Jeddah",
+      to: "Mecca",
+      depart: "08:00",
+      arrive: "08:45",
+      price: 89,
+      duration: "45m",
+      image: "/airline.jpg",
+      features: ["Direct Flight", "Free Meals", "Entertainment"]
+    },
+    {
+      id: 2,
+      airline: "Flynas",
+      from: "Riyadh",
+      to: "Jeddah",
+      depart: "14:30",
+      arrive: "16:15",
+      price: 149,
+      duration: "1h 45m",
+      image: "/airline.jpg",
+      features: ["Direct Flight", "Free WiFi", "Priority Boarding"]
+    },
+    {
+      id: 3,
+      airline: "Saudia",
+      from: "Mecca",
+      to: "Medina",
+      depart: "10:15",
+      arrive: "11:00",
+      price: 79,
+      duration: "45m",
+      image: "/airline.jpg",
+      features: ["Direct Flight", "Free Snacks", "Entertainment"]
+    }
+  ]
+
+  const transport = [
+    {
+      id: 1,
+      type: "Premium Car",
+      from: "Jeddah Airport",
+      to: "Mecca City Center",
+      price: 89,
+      duration: "1h 30m",
+      image: "/transport.jpg",
+      features: ["Professional Driver", "Air Conditioning", "Free WiFi"]
+    },
+    {
+      id: 2,
+      type: "Luxury Van",
+      from: "Mecca",
+      to: "Medina",
+      price: 199,
+      duration: "4h 15m",
+      image: "/transport.jpg",
+      features: ["Professional Driver", "Comfortable Seats", "Free Water"]
+    },
+    {
+      id: 3,
+      type: "Executive Bus",
+      from: "Jeddah",
+      to: "Mecca",
+      price: 45,
+      duration: "2h 30m",
+      image: "/transport.jpg",
+      features: ["Professional Driver", "Comfortable Seats", "Free Water", "WiFi"]
+    }
+  ]
+
+  const getCurrentData = () => {
+    switch(activeTab) {
+      case 'hotels': return hotels
+      case 'flights': return flights
+      case 'transport': return transport
+      default: return []
+    }
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
-      {/* Navigation */}
-      <nav className="bg-white/80 backdrop-blur-md border-b border-white/20 sticky top-0 z-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-blue-50 to-slate-100 relative overflow-hidden">
+      {/* Animated Background */}
+      <div className="fixed inset-0 z-0">
+        <div className="absolute inset-0 transition-opacity duration-1000">
+          <Image
+            src={backgroundImages[currentImage]}
+            alt="Background"
+            fill
+            className="object-cover"
+          />
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-600/15 via-slate-500/10 to-slate-500/15"></div>
+      </div>
+
+      {/* Floating Particles */}
+      <div className="fixed inset-0 z-10 pointer-events-none">
+        {[...Array(15)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute w-2 h-2 bg-blue-400/40 rounded-full animate-float"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 3}s`,
+              animationDuration: `${4 + Math.random() * 3}s`
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Header */}
+      <header className="relative z-20 bg-white/90 backdrop-blur-md shadow-lg border-b border-white/20 sticky top-0">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-2 sm:space-x-4">
-              <div className="relative w-12 h-12 sm:w-16 sm:h-16 shadow-2xl">
+            <div className="flex items-center space-x-3 hover:scale-105 transition-transform duration-300">
+              <div className="relative w-12 h-12">
                 <Image
-                  src="/logo.jpeg"
-                  alt="Quality Destination Logo"
-                  fill
-                  className="rounded-full object-cover shadow-xl ring-2 sm:ring-4 ring-blue-300/50 hover:ring-purple-300/50 transition-all duration-300"
+                  src="/logobg.png"
+                  alt="Quality Destination"
+                  width={48}
+                  height={48}
+                  className="rounded-full object-cover shadow-lg"
                 />
+                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-500 to-slate-500 opacity-20 animate-spin-slow"></div>
               </div>
-              <h1 className="text-lg sm:text-xl lg:text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-slate-600 bg-clip-text text-transparent">
                 Quality Destination
               </h1>
             </div>
             
-            {/* Desktop Navigation */}
-            <div className="hidden md:block">
-              <div className="ml-10 flex items-baseline space-x-8">
-                <a href="#" className="text-gray-600 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors duration-300 hover:scale-105 transform">
-                  Flights
+            <nav className="hidden md:flex items-center space-x-8">
+              {['Hotels', 'Flights', 'Transport'].map((item, index) => (
+                <a
+                  key={item}
+                  href="#"
+                  className="text-gray-600 hover:text-blue-600 transition-all duration-300 hover:scale-105 relative group"
+                  style={{ animationDelay: `${index * 0.1}s` }}
+                >
+                  {item}
+                  <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-slate-600 group-hover:w-full transition-all duration-300"></div>
                 </a>
-                <a href="#" className="text-gray-600 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors duration-300 hover:scale-105 transform">
-                  Hotels
-                </a>
-                <a href="#" className="text-gray-600 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors duration-300 hover:scale-105 transform">
-                  Transport
-                </a>
-                <a href="#" className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-full text-sm font-medium hover:shadow-lg transition-all duration-300 transform hover:scale-105">
-                  Sign In
-                </a>
-              </div>
+              ))}
+              <button className="bg-gradient-to-r from-blue-600 to-slate-600 text-white px-6 py-2 rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300">
+                Sign In
+              </button>
+            </nav>
+          </div>
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <section className="relative z-10 py-20 px-4">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <div className="flex items-center justify-center mb-6">
+              <span className="text-blue-500 text-2xl mr-3 animate-pulse">✨</span>
+              <span className="text-blue-600 font-semibold text-lg">Premium Travel Experience</span>
+            </div>
+            
+            <h1 className="text-5xl md:text-7xl font-bold text-gray-900 mb-6">
+              Discover Your
+              <span className="bg-gradient-to-r from-blue-600 to-slate-600 bg-clip-text text-transparent block animate-gradient">
+                Perfect Journey
+              </span>
+            </h1>
+            
+            <p className="text-xl text-gray-600 mb-12 max-w-3xl mx-auto">
+              Experience luxury travel with our premium booking platform. 
+              Book hotels, flights, and transport with confidence and style.
+            </p>
+          </div>
+
+          {/* Enhanced Search Interface */}
+          <div className="bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl p-8 border border-white/20 hover:shadow-3xl transition-all duration-500">
+            <div className="flex border-b mb-8">
+              {[
+                { id: 'hotels', label: 'Hotels', icon: '🏨', color: 'from-blue-500 to-blue-600' },
+                { id: 'flights', label: 'Flights', icon: '✈️', color: 'from-sky-500 to-blue-500' },
+                { id: 'transport', label: 'Transport', icon: '🚗', color: 'from-purple-500 to-pink-500' }
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`px-8 py-4 font-medium transition-all duration-300 relative hover:scale-105 ${
+                    activeTab === tab.id 
+                      ? 'text-white' 
+                      : 'text-gray-600 hover:text-gray-900'
+                  }`}
+                >
+                  {activeTab === tab.id && (
+                    <div className={`absolute inset-0 bg-gradient-to-r ${tab.color} rounded-lg`}></div>
+                  )}
+                  <div className="relative flex items-center">
+                    <span className="mr-2 text-xl">{tab.icon}</span>
+                    {tab.label}
+                  </div>
+                </button>
+              ))}
             </div>
 
-            {/* Mobile Menu Button */}
-            <div className="md:hidden">
-              <button className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-3 py-2 rounded-lg text-sm font-medium hover:shadow-lg transition-all duration-300">
-                Menu
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+              {[
+                { label: 'Destination', placeholder: 'Where are you going?', icon: '📍' },
+                { label: 'Check-in', type: 'date', icon: '📅' },
+                { label: 'Check-out', type: 'date', icon: '📅' },
+                { label: 'Guests', type: 'select', icon: '👥', options: ['2 Guests', '1 Guest', '3 Guests', '4+ Guests'] }
+              ].map((input, index) => (
+                <div key={input.label} className="group" style={{ animationDelay: `${index * 0.1}s` }}>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    {input.label}
+                  </label>
+                  <div className="relative">
+                    <span className="absolute left-3 top-3 text-gray-400 group-focus-within:text-blue-500 transition-colors">
+                      {input.icon}
+                    </span>
+                    {input.type === 'select' ? (
+                      <select className="w-full pl-10 pr-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 hover:border-blue-300 hover:scale-105">
+                        {input.options?.map(option => (
+                          <option key={option} value={option}>{option}</option>
+                        ))}
+                      </select>
+                    ) : (
+                      <input
+                        type={input.type || 'text'}
+                        placeholder={input.placeholder}
+                        className="w-full pl-10 pr-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 hover:border-blue-300 hover:scale-105"
+                      />
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <button className="w-full bg-gradient-to-r from-blue-600 to-slate-600 text-white py-4 px-8 rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-300 font-semibold mt-8 flex items-center justify-center group">
+              <span className="mr-2 group-hover:rotate-12 transition-transform">🔍</span>
+              Search {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
+              <span className="ml-2 group-hover:translate-x-1 transition-transform">→</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="relative z-10 py-20 px-4">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+              Why Choose <span className="text-gradient">Quality Destination</span>?
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Experience premium travel with our exclusive features and world-class service
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              {
+                icon: '🛡️',
+                title: "Secure Booking",
+                description: "Your data and payments are protected with bank-level security",
+                color: "from-blue-500 to-blue-600"
+              },
+              {
+                icon: '🏆',
+                title: "Best Price Guarantee",
+                description: "We guarantee the best prices or we'll match any lower price",
+                color: "from-slate-500 to-slate-600"
+              },
+              {
+                icon: '🌍',
+                title: "24/7 Support",
+                description: "Round-the-clock customer support in multiple languages",
+                color: "from-blue-600 to-slate-600"
+              }
+            ].map((feature, index) => (
+              <div
+                key={feature.title}
+                className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 border border-white/20 hover:-translate-y-2 hover:scale-105"
+                style={{ animationDelay: `${index * 0.2}s` }}
+              >
+                <div className={`w-16 h-16 bg-gradient-to-r ${feature.color} rounded-2xl flex items-center justify-center mb-6 text-2xl`}>
+                  {feature.icon}
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-4">{feature.title}</h3>
+                <p className="text-gray-600">{feature.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Results Section */}
+      <section className="relative z-10 py-16 px-4">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center justify-between mb-12">
+            <div>
+              <h2 className="text-3xl font-bold text-gray-900 mb-2">
+                Available {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
+              </h2>
+              <p className="text-gray-600">Discover the best options for your journey</p>
+            </div>
+            <div className="flex items-center space-x-4">
+              <button className="flex items-center px-6 py-3 border border-gray-300 rounded-xl hover:bg-gray-50 transition-all duration-300 hover:-translate-y-1">
+                <span className="mr-2">🔍</span>
+                Filter
+              </button>
+              <button className="flex items-center px-6 py-3 border border-gray-300 rounded-xl hover:bg-gray-50 transition-all duration-300 hover:-translate-y-1">
+                <span className="mr-2">📊</span>
+                Sort
               </button>
             </div>
           </div>
-        </div>
-      </nav>
 
-      {/* Hero Section */}
-      <section className="relative py-20 px-4 overflow-hidden min-h-[80vh] flex items-center">
-        {/* Clean Background */}
-        <div className="absolute inset-0 z-0">
-          {/* Single Background Image */}
-          <Image
-            src="/hotel.jpg"
-            alt="Travel background"
-            fill
-            className="object-cover opacity-20"
-          />
-          
-          {/* Clean Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-br from-gray-900/60 via-slate-800/50 to-gray-900/60"></div>
-          
-          {/* Subtle Floating Elements */}
-          <div className="absolute top-0 left-0 w-full h-full">
-            <div className="absolute top-20 left-10 w-16 h-16 bg-white/10 rounded-full animate-float backdrop-blur-sm"></div>
-            <div className="absolute top-40 right-20 w-12 h-12 bg-gray-400/20 rounded-full animate-float backdrop-blur-sm" style={{animationDelay: '2s'}}></div>
-            <div className="absolute bottom-20 left-1/4 w-10 h-10 bg-slate-400/20 rounded-full animate-float backdrop-blur-sm" style={{animationDelay: '4s'}}></div>
-            <div className="absolute bottom-40 right-1/3 w-14 h-14 bg-white/15 rounded-full animate-float backdrop-blur-sm" style={{animationDelay: '1s'}}></div>
-          </div>
-        </div>
-        
-        <div className="relative z-10 max-w-7xl mx-auto text-center px-4">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold text-white mb-6 sm:mb-8 animate-fade-in drop-shadow-2xl">
-            Your journey awaits
-          </h1>
-          <p className="text-base sm:text-lg md:text-xl text-white mb-8 sm:mb-12 max-w-2xl mx-auto animate-slide-up drop-shadow-lg bg-black/20 backdrop-blur-sm rounded-2xl p-4 sm:p-6">
-            Discover premium destinations with <span className="font-semibold bg-gradient-to-r from-gray-300 to-white bg-clip-text text-transparent">Quality Destination</span>. 
-            Experience luxury travel with excellence and reliability.
-          </p>
-          
-          {/* Booking Widget */}
-          <div className="animate-slide-up" style={{animationDelay: '0.3s'}}>
-            <BookingWidget />
-          </div>
-        </div>
-      </section>
-
-      {/* Travel Statistics Section */}
-      <section className="py-20 bg-gradient-to-r from-blue-600 to-purple-600 text-white relative overflow-hidden">
-        <div className="absolute inset-0">
-          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-blue-700/50 to-purple-700/50"></div>
-          <div className="absolute top-10 right-10 w-32 h-32 bg-white/10 rounded-full animate-float"></div>
-          <div className="absolute bottom-10 left-10 w-24 h-24 bg-white/10 rounded-full animate-float" style={{animationDelay: '2s'}}></div>
-        </div>
-        
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">Trusted by Travelers Worldwide</h2>
-            <p className="text-xl text-blue-100">Join millions of satisfied customers who choose Quality Destination</p>
-          </div>
-          
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <div className="text-center animate-slide-up">
-              <div className="text-5xl font-bold mb-2">2M+</div>
-              <div className="text-blue-100">Happy Travelers</div>
-            </div>
-            <div className="text-center animate-slide-up" style={{animationDelay: '0.1s'}}>
-              <div className="text-5xl font-bold mb-2">150+</div>
-              <div className="text-blue-100">Countries</div>
-            </div>
-            <div className="text-center animate-slide-up" style={{animationDelay: '0.2s'}}>
-              <div className="text-5xl font-bold mb-2">24/7</div>
-              <div className="text-blue-100">Support</div>
-            </div>
-            <div className="text-center animate-slide-up" style={{animationDelay: '0.3s'}}>
-              <div className="text-5xl font-bold mb-2">99%</div>
-              <div className="text-blue-100">Satisfaction</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Services Overview Section */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-light text-gray-900 mb-4">
-              Complete Travel Solutions
-            </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              From flights to accommodations, we provide everything you need for the perfect journey
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="group p-8 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
-              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">Flight Bookings</h3>
-              <p className="text-gray-600 mb-4">Find the best flight deals with our advanced search technology and exclusive partnerships with major airlines.</p>
-              <ul className="text-sm text-gray-500 space-y-1">
-                <li>• Best price guarantee</li>
-                <li>• Flexible booking options</li>
-                <li>• Real-time price alerts</li>
-              </ul>
-            </div>
-            
-            <div className="group p-8 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
-              <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">Hotel Reservations</h3>
-              <p className="text-gray-600 mb-4">Discover luxury accommodations worldwide with our curated selection of premium hotels and resorts.</p>
-              <ul className="text-sm text-gray-500 space-y-1">
-                <li>• Luxury accommodations</li>
-                <li>• Exclusive hotel deals</li>
-                <li>• Free cancellation</li>
-              </ul>
-            </div>
-            
-            <div className="group p-8 bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
-              <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">Transportation</h3>
-              <p className="text-gray-600 mb-4">Seamless ground transportation with premium vehicles and professional drivers for your comfort.</p>
-              <ul className="text-sm text-gray-500 space-y-1">
-                <li>• Premium vehicles</li>
-                <li>• Professional drivers</li>
-                <li>• 24/7 availability</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials Section */}
-      <section className="py-20 bg-gradient-to-br from-gray-50 to-blue-50 relative overflow-hidden">
-        <div className="absolute inset-0">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-blue-200/20 rounded-full blur-3xl animate-pulse-slow"></div>
-          <div className="absolute bottom-0 left-0 w-80 h-80 bg-purple-200/20 rounded-full blur-3xl animate-pulse-slow" style={{animationDelay: '2s'}}></div>
-        </div>
-        
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-light text-gray-900 mb-4">
-              What Our <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Travelers</span> Say
-            </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Real experiences from real travelers who trusted us with their journeys
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
-              <div className="flex items-center mb-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-bold">
-                  A
-                </div>
-                <div className="ml-4">
-                  <h4 className="font-semibold text-gray-900">Ahmed Al-Rashid</h4>
-                  <p className="text-sm text-gray-500">Dubai, UAE</p>
-                </div>
-              </div>
-              <p className="text-gray-600 italic">"Quality Destination made my pilgrimage to Mecca seamless and comfortable. Their attention to detail and 24/7 support was exceptional."</p>
-              <div className="flex text-yellow-400 mt-4">
-                {'★'.repeat(5)}
-              </div>
-            </div>
-            
-            <div className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
-              <div className="flex items-center mb-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold">
-                  S
-                </div>
-                <div className="ml-4">
-                  <h4 className="font-semibold text-gray-900">Sarah Johnson</h4>
-                  <p className="text-sm text-gray-500">London, UK</p>
-                </div>
-              </div>
-              <p className="text-gray-600 italic">"The luxury hotel recommendations were perfect, and the flight booking process was incredibly smooth. Highly recommended!"</p>
-              <div className="flex text-yellow-400 mt-4">
-                {'★'.repeat(5)}
-              </div>
-            </div>
-            
-            <div className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
-              <div className="flex items-center mb-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-full flex items-center justify-center text-white font-bold">
-                  M
-                </div>
-                <div className="ml-4">
-                  <h4 className="font-semibold text-gray-900">Mohammed Hassan</h4>
-                  <p className="text-sm text-gray-500">Jeddah, Saudi Arabia</p>
-                </div>
-              </div>
-              <p className="text-gray-600 italic">"Outstanding service for business travel. The transportation arrangements were punctual and the hotels exceeded expectations."</p>
-              <div className="flex text-yellow-400 mt-4">
-                {'★'.repeat(5)}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Creative Divider */}
-      <div className="relative h-20 bg-gradient-to-b from-transparent via-white/50 to-white">
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-32 h-1 bg-gradient-to-r from-emerald-500 via-sky-500 to-purple-500 rounded-full"></div>
-        </div>
-      </div>
-
-      {/* Why Book With Us Section */}
-      <section className="py-20 bg-gradient-to-br from-white via-blue-50/50 to-indigo-50/50 relative overflow-hidden">
-        <div className="absolute inset-0">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-blue-200/20 rounded-full blur-3xl animate-pulse-slow"></div>
-          <div className="absolute bottom-0 left-0 w-80 h-80 bg-purple-200/20 rounded-full blur-3xl animate-pulse-slow" style={{animationDelay: '1.5s'}}></div>
-        </div>
-        
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12 sm:mb-16 animate-fade-in">
-            <h2 className="text-2xl sm:text-3xl font-light text-gray-900 mb-4">
-              Why Choose <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Quality Destination</span>?
-            </h2>
-            <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto px-4">
-              We deliver exceptional travel experiences with luxury, reliability, and excellence
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-            <div className="text-center group animate-slide-in-left hover:scale-105 transition-all duration-300">
-              <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg group-hover:shadow-xl transition-shadow duration-300">
-                <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">Premium Pricing</h3>
-              <p className="text-gray-600">
-                Exclusive deals and premium pricing for luxury accommodations and first-class experiences.
-              </p>
-            </div>
-            
-            <div className="text-center group animate-slide-up hover:scale-105 transition-all duration-300" style={{animationDelay: '0.2s'}}>
-              <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg group-hover:shadow-xl transition-shadow duration-300">
-                <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192L5.636 18.364M12 2.25a9.75 9.75 0 100 19.5 9.75 9.75 0 000-19.5z" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">24/7 Concierge</h3>
-              <p className="text-gray-600">
-                Personal concierge service available around the clock for your luxury travel needs.
-              </p>
-            </div>
-            
-            <div className="text-center group animate-slide-in-right hover:scale-105 transition-all duration-300" style={{animationDelay: '0.4s'}}>
-              <div className="w-20 h-20 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg group-hover:shadow-xl transition-shadow duration-300">
-                <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">Global Excellence</h3>
-              <p className="text-gray-600">
-                Curated destinations worldwide with local expertise and premium service standards.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Special Offers Section */}
-      <section className="py-20 bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 relative overflow-hidden">
-        <div className="absolute inset-0">
-          <div className="absolute top-1/3 left-0 w-64 h-64 bg-gradient-to-r from-blue-300/20 to-purple-300/20 rounded-full blur-3xl animate-pulse-slow"></div>
-          <div className="absolute bottom-1/3 right-0 w-80 h-80 bg-gradient-to-l from-pink-300/20 to-indigo-300/20 rounded-full blur-3xl animate-pulse-slow" style={{animationDelay: '3s'}}></div>
-        </div>
-        
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-light text-gray-900 mb-4">
-              Exclusive <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Travel Deals</span>
-            </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Limited-time offers for premium destinations and luxury experiences
-            </p>
-          </div>
-          
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden">
-              <div className="relative h-48 bg-gradient-to-br from-blue-500 to-blue-600">
-                <div className="absolute inset-0 bg-black/20"></div>
-                <div className="absolute top-4 left-4">
-                  <span className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold">-30% OFF</span>
-                </div>
-                <div className="absolute bottom-4 left-4 right-4">
-                  <h3 className="text-white text-xl font-bold">Mecca Pilgrimage</h3>
-                  <p className="text-blue-100 text-sm">Complete Hajj packages</p>
-                </div>
-              </div>
-              <div className="p-6">
-                <p className="text-gray-600 mb-4">Experience the spiritual journey of a lifetime with our comprehensive Hajj packages including flights, accommodation, and guidance.</p>
-                <div className="flex items-center justify-between">
-                  <span className="text-2xl font-bold text-gray-900">$2,999</span>
-                  <span className="text-sm text-gray-500 line-through">$4,299</span>
-                </div>
-              </div>
-            </div>
-            
-            <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden">
-              <div className="relative h-48 bg-gradient-to-br from-emerald-500 to-emerald-600">
-                <div className="absolute inset-0 bg-black/20"></div>
-                <div className="absolute top-4 left-4">
-                  <span className="bg-orange-500 text-white px-3 py-1 rounded-full text-sm font-semibold">-25% OFF</span>
-                </div>
-                <div className="absolute bottom-4 left-4 right-4">
-                  <h3 className="text-white text-xl font-bold">Luxury Hotels</h3>
-                  <p className="text-emerald-100 text-sm">5-star accommodations</p>
-                </div>
-              </div>
-              <div className="p-6">
-                <p className="text-gray-600 mb-4">Indulge in luxury with our premium hotel collection featuring world-class amenities and exceptional service.</p>
-                <div className="flex items-center justify-between">
-                  <span className="text-2xl font-bold text-gray-900">$299</span>
-                  <span className="text-sm text-gray-500 line-through">$399</span>
-                </div>
-              </div>
-            </div>
-            
-            <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden">
-              <div className="relative h-48 bg-gradient-to-br from-purple-500 to-purple-600">
-                <div className="absolute inset-0 bg-black/20"></div>
-                <div className="absolute top-4 left-4">
-                  <span className="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-semibold">-20% OFF</span>
-                </div>
-                <div className="absolute bottom-4 left-4 right-4">
-                  <h3 className="text-white text-xl font-bold">Business Travel</h3>
-                  <p className="text-purple-100 text-sm">Corporate packages</p>
-                </div>
-              </div>
-              <div className="p-6">
-                <p className="text-gray-600 mb-4">Streamline your business travel with our corporate packages including flights, hotels, and ground transportation.</p>
-                <div className="flex items-center justify-between">
-                  <span className="text-2xl font-bold text-gray-900">$1,499</span>
-                  <span className="text-sm text-gray-500 line-through">$1,899</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Popular Destinations Section */}
-      <section className="py-20 bg-gradient-to-br from-gray-50 via-white to-blue-50/30 relative overflow-hidden">
-        <div className="absolute inset-0">
-          <div className="absolute top-1/4 left-0 w-72 h-72 bg-gradient-to-r from-blue-200/30 to-purple-200/30 rounded-full blur-3xl animate-pulse-slow"></div>
-          <div className="absolute bottom-1/4 right-0 w-64 h-64 bg-gradient-to-l from-indigo-200/30 to-pink-200/30 rounded-full blur-3xl animate-pulse-slow" style={{animationDelay: '2s'}}></div>
-        </div>
-        
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12 sm:mb-16 animate-fade-in">
-            <h2 className="text-2xl sm:text-3xl font-light text-gray-900 mb-4">
-              Premium <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Destinations</span>
-            </h2>
-            <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto px-4">
-              Discover sacred and magnificent destinations with Quality Destination
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-            {[
-              { name: 'Jeddah', image: '/jeddah.jpg', description: 'The Bride of the Red Sea' },
-              { name: 'Mecca', image: '/mecca.jpg', description: 'The Holiest City' },
-              { name: 'Medina', image: '/Medina.jpg', description: 'The City of the Prophet' },
-            ].map((destination, index) => (
-              <div 
-                key={index} 
-                className="group cursor-pointer animate-slide-up hover:scale-105 transition-all duration-500"
-                style={{animationDelay: `${index * 0.2}s`}}
+            {getCurrentData().map((item: any, index: number) => (
+              <div
+                key={item.id}
+                className="group cursor-pointer"
+                onMouseEnter={() => setHoveredCard(item.id)}
+                onMouseLeave={() => setHoveredCard(null)}
               >
-                <div className="relative overflow-hidden rounded-2xl aspect-[4/3] mb-4 shadow-lg group-hover:shadow-2xl transition-shadow duration-300">
-                  <Image
-                    src={destination.image}
-                    alt={destination.name}
-                    fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent group-hover:from-black/70 transition-opacity duration-300" />
-                  <div className="absolute bottom-4 left-4 right-4">
-                    <h3 className="text-xl font-bold text-white mb-1">
-                      {destination.name}
-                    </h3>
-                    <p className="text-sm text-white/90">
-                      {destination.description}
-                    </p>
+                <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 hover:scale-105">
+                  <div className="relative h-64 overflow-hidden">
+                    <Image
+                      src={item.image}
+                      alt={item.name || item.airline || item.type}
+                      fill
+                      className="object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                    
+                    {/* Floating Action Buttons */}
+                    <div className="absolute top-4 right-4 flex space-x-2">
+                      <button 
+                        onClick={() => toggleFavorite(item.id)}
+                        className={`p-3 rounded-full backdrop-blur-sm transition-all duration-300 hover:scale-110 ${
+                          favorites.includes(item.id) 
+                            ? 'bg-red-500 text-white shadow-lg' 
+                            : 'bg-white/80 text-gray-600 hover:bg-red-500 hover:text-white'
+                        }`}
+                      >
+                        {favorites.includes(item.id) ? '❤️' : '🤍'}
+                      </button>
+                      <button className="p-3 bg-white/80 text-gray-600 rounded-full backdrop-blur-sm hover:bg-blue-500 hover:text-white transition-all duration-300 hover:scale-110">
+                        📤
+                      </button>
+                    </div>
+
+                    {/* Price Badge */}
+                    <div className="absolute bottom-4 left-4">
+                      <div className="bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full">
+                        <span className="text-2xl font-bold text-gray-900">${item.price}</span>
+                        <span className="text-sm text-gray-500 ml-1">
+                          {activeTab === 'hotels' ? '/night' : 
+                           activeTab === 'flights' ? '/person' : '/trip'}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Rating Badge */}
+                    <div className="absolute top-4 left-4">
+                      <div className="bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full flex items-center">
+                        <span className="text-yellow-400 mr-1">⭐</span>
+                        <span className="text-sm font-semibold text-gray-900">{item.rating}</span>
+                      </div>
+                    </div>
                   </div>
-                  <div className="absolute top-4 right-4">
-                    <div className="w-8 h-8 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center group-hover:bg-white/30 transition-colors duration-300">
-                      <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                      </svg>
+                  
+                  <div className="p-6">
+                    <div className="flex items-center justify-between mb-3">
+                      <h3 className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
+                        {item.name || item.airline || item.type}
+                      </h3>
+                    </div>
+                    
+                    <p className="text-gray-600 mb-4 line-clamp-2">
+                      {item.location || `${item.from} → ${item.to}`}
+                    </p>
+
+                    {/* Hotel Details */}
+                    {activeTab === 'hotels' && (
+                      <div className="space-y-2 mb-4">
+                        <div className="flex items-center justify-between text-sm text-gray-600">
+                          <span className="flex items-center">
+                            <span className="mr-1 text-blue-500">📍</span>
+                            {item.distance}
+                          </span>
+                          <span className="bg-gradient-to-r from-blue-500 to-slate-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
+                            {item.type}
+                          </span>
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                          {item.amenities?.slice(0, 3).map((amenity: string, idx: number) => (
+                            <span key={idx} className="text-xs bg-blue-100 text-blue-700 px-3 py-1 rounded-full">
+                              {amenity}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Flight/Transport Details */}
+                    {(activeTab === 'flights' || activeTab === 'transport') && (
+                      <div className="flex items-center justify-between text-sm text-gray-600 mb-4">
+                        <span className="flex items-center">
+                          <span className="mr-1">🕐</span>
+                          {item.depart} - {item.arrive || item.duration}
+                        </span>
+                        <span className="font-semibold">{item.duration}</span>
+                      </div>
+                    )}
+
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center text-sm text-gray-500">
+                        <span className="mr-1">👁️</span>
+                        <span>View Details</span>
+                      </div>
+                      <button className="bg-gradient-to-r from-blue-600 to-slate-600 text-white py-2 px-6 rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-300 font-semibold">
+                        Book Now
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -458,42 +526,59 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-gradient-to-br from-gray-900 via-blue-900 to-indigo-900 text-white py-16 relative overflow-hidden">
-        <div className="absolute inset-0">
-          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-blue-600/10 to-purple-600/10"></div>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl animate-pulse-slow"></div>
-        </div>
-        
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center animate-fade-in">
-            <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4 mb-6 sm:mb-8">
-              <div className="relative w-16 h-16 sm:w-20 sm:h-20 animate-float shadow-2xl">
-                <Image
-                  src="/logo.jpeg"
-                  alt="Quality Destination Logo"
-                  fill
-                  className="rounded-full object-cover shadow-xl ring-2 sm:ring-4 ring-blue-400/30"
-                />
-                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-400/30 to-purple-400/30 animate-pulse-slow"></div>
+      {/* Statistics Section */}
+      <section className="relative z-10 py-20 px-4 bg-gradient-to-r from-blue-600 to-slate-600">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-white mb-4">
+              Trusted by <span className="text-yellow-300">Millions</span> Worldwide
+            </h2>
+            <p className="text-xl text-blue-100">Join our community of satisfied travelers</p>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            {[
+              { number: "2M+", label: "Happy Travelers", icon: "👥" },
+              { number: "50K+", label: "Hotels Worldwide", icon: "🏨" },
+              { number: "99.9%", label: "Customer Satisfaction", icon: "🏆" },
+              { number: "24/7", label: "Customer Support", icon: "🛡️" }
+            ].map((stat, index) => (
+              <div key={stat.label} className="text-center hover:scale-110 transition-all duration-300">
+                <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">
+                  {stat.icon}
+                </div>
+                <div className="text-4xl font-bold text-white mb-2">{stat.number}</div>
+                <div className="text-blue-100">{stat.label}</div>
               </div>
-              <h3 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="relative z-10 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 text-white py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <div className="flex items-center justify-center space-x-3 mb-6">
+              <div className="relative w-12 h-12">
+                <Image
+                  src="/logobg.png"
+                  alt="Quality Destination"
+                  width={48}
+                  height={48}
+                  className="rounded-full object-cover"
+                />
+              </div>
+              <h3 className="text-xl font-bold bg-gradient-to-r from-blue-400 to-slate-400 bg-clip-text text-transparent">
                 Quality Destination
               </h3>
             </div>
-            <p className="text-gray-300 mb-6 sm:mb-8 text-base sm:text-lg max-w-2xl mx-auto px-4">
-              Your premium partner for exceptional travel experiences. Discover the world with luxury, excellence, and reliability.
+            <p className="text-gray-300 mb-6">
+              Your trusted partner for premium travel experiences worldwide.
             </p>
-            <div className="flex flex-col sm:flex-row justify-center space-y-2 sm:space-y-0 sm:space-x-8 text-sm text-gray-400 mb-6 sm:mb-8">
-              <a href="#" className="hover:text-white transition-colors duration-300 hover:scale-105 transform">Privacy Policy</a>
-              <a href="#" className="hover:text-white transition-colors duration-300 hover:scale-105 transform">Terms of Service</a>
-              <a href="#" className="hover:text-white transition-colors duration-300 hover:scale-105 transform">Contact Us</a>
-            </div>
-            <div className="border-t border-gray-700 pt-8">
-              <p className="text-gray-500 text-sm">
-                © 2024 Quality Destination. All rights reserved. Crafted with excellence.
-              </p>
-            </div>
+            <p className="text-gray-400">
+              © 2024 Quality Destination. Crafted with ❤️ for travelers worldwide.
+            </p>
           </div>
         </div>
       </footer>
